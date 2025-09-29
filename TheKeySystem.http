@@ -1,0 +1,6 @@
+@TheKeySystem_HostAddress = http://localhost:5166
+
+GET {{TheKeySystem_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
