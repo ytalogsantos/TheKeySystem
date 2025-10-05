@@ -6,11 +6,11 @@ using TheKeySystem.Services;
 [ApiController]
 public class UserController : ControllerBase
 {
-    UserService Service;
+    private readonly UserService service;
 
     public UserController(UserService service)
     {
-        Service = service;
+        this.service = service;
     }
 
 
@@ -21,8 +21,8 @@ public class UserController : ControllerBase
     {
         try
         {
-            var newUser = await Service.CreateUser(user);
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id}, newUser);
+            var newUser = await service.CreateUser(user);
+            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, newUser);
         }
         catch (Exception e)
         {
@@ -31,22 +31,53 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<List<User>> GetAll()
-    {
-        return await Service.GetAll();
-    }
-
-    [HttpGet("{id}")]
-    public async Task<User> GetUser(long id)
+    public async Task<ActionResult<List<User>>> GetUsers()
     {
         try
         {
-            var userFound = await Service.GetUser(id);
+            var users = await service.GetUsers();
+
+            if (users != null)
+            {
+                return Ok(users);
+            }
+            return NotFound();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<User>> GetUser(long id)
+    {
+        try
+        {
+            var userFound = await service.GetUser(id);
             if (userFound != null)
             {
                 return userFound;
             }
-            return null;
+            return NotFound();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Update(long id)
+    {
+        try
+        {
+            var updatedUser = await service.Update(id);
+            if (updatedUser != null)
+            {
+                return Ok();
+            }
+            return NotFound();
         }
         catch (Exception e)
         {

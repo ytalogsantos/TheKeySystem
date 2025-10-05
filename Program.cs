@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TheKeySystem.Models;
+using TheKeySystem.Repositories;
+using TheKeySystem.Repositories.Interfaces;
 using TheKeySystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TksDbContext>(opt => opt.UseInMemoryDatabase("TheKeySystem"));
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
