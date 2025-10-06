@@ -49,7 +49,11 @@ public class UserRepository : IUserRepository
         try
         {
             var user = await context.Users.FirstOrDefaultAsync(e => e.Id == id);
-            return user;
+            if (user != null)
+            {
+                return user;
+            }
+            return null;
         }
         catch (Exception e)
         {
@@ -62,7 +66,7 @@ public class UserRepository : IUserRepository
         try
         {
             var updatedUser = await context.Users.FirstOrDefaultAsync(e => e.Id == user.Id);
-            if (user == null)
+            if (user == null || updatedUser == null)
             {
                 return null;
             }

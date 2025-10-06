@@ -3,6 +3,7 @@ using TheKeySystem.Models;
 using TheKeySystem.Repositories;
 using TheKeySystem.Repositories.Interfaces;
 using TheKeySystem.Services;
+using TheKeySystem.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TksDbContext>(opt => opt.UseInMemoryDatabase("TheKeySystem"));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddRouting(options =>
+{
+    options.ConstraintMap.Add("id", typeof(long));
+});
 
 var app = builder.Build();
 

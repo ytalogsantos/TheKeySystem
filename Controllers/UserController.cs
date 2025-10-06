@@ -49,7 +49,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{int:id}")]
     public async Task<ActionResult<User>> GetUser(long id)
     {
         try
@@ -67,21 +67,44 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(long id)
+    [HttpPut("{int:id}")]
+    public async Task<ActionResult> UpdateUser(long id, User user)
     {
         try
         {
-            var updatedUser = await service.Update(id);
+            if (id != user.Id)
+            {
+                return BadRequest("User Id mismatch.");
+            }
+
+            var updatedUser = await service.UpdateUser(id);
             if (updatedUser != null)
             {
-                return Ok();
+                return Ok("User updated.");
             }
-            return NotFound();
+            return NotFound("User not found.");
         }
         catch (Exception e)
         {
             throw new Exception(e.Message);
+        }
+    }
+
+    [HttpDelete("{int:id}")]
+    public async Task<ActionResult> DeleteUser(long id)
+    {
+        try
+        {
+            var userToDelete = await GetUser(id);
+            if (userToDelete != null)
+            {
+                return Ok("User deleted.");
+            }
+            return NotFound("User not found.");
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting data.");
         }
     }
 }

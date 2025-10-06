@@ -2,9 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using TheKeySystem.Models;
 using TheKeySystem.Repositories.Interfaces;
 using TheKeySystem.Repositories;
+using TheKeySystem.Services.Interfaces;
 namespace TheKeySystem.Services;
 
-public class UserService
+public class UserService : IUserService
 {
     private readonly IUserRepository userRepository;
 
@@ -39,7 +40,7 @@ public class UserService
         }
     }
 
-    public async Task<User> Update(long id)
+    public async Task<User> UpdateUser(long id)
     {
         try
         {
@@ -58,7 +59,7 @@ public class UserService
     }
 
 
-    public async void Delete(long id)
+    public async void DeleteUser(long id)
     {
         try
         {
