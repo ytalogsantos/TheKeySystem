@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using TheKeySystem.Models;
-using TheKeySystem.Services;
 using TheKeySystem.Services.Interfaces;
 
 [Route("users")]

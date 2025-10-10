@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<TksDbContext>(opt => opt.UseInMemoryDatabase("TheKeySystem"));
+builder.Services.AddDbContext<TksDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("TksDefaultConnection")));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
