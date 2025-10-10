@@ -8,6 +8,6 @@ public interface IUserRepository
     Task<List<User>> GetAll();
     Task<User> GetById(long id);
     Task<User> Update(User user);
-    void Delete(long id);
+    void Delete(User user);
 
 }

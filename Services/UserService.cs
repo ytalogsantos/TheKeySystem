@@ -14,19 +14,19 @@ public class UserService : IUserService
         userRepository = repository;
     }
 
-    public async Task<User> CreateUser(User user)
+    public async Task<User> CreateUser(User user) // TODO: implement more validations
     {
         var newUser = await userRepository.Create(user);
         return newUser;
     }
 
-    public async Task<List<User>> GetUsers()
+    public async Task<List<User>> GetUsers() // TODO: more validations here too
     {
         var users = await userRepository.GetAll();
         return users;
     }
 
-    public async Task<User> GetUser(long id)
+    public async Task<User> GetUser(long id) // and here...
     {
         try
         {
@@ -40,13 +40,16 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<User> UpdateUser(long id)
+    public async Task<User> UpdateUser(long id, User user)
     {
         try
         {
             var userToUpdate = await GetUser(id);
             if (userToUpdate != null)
             {
+                userToUpdate.Username = user.Username;
+                userToUpdate.Password = user.Password;
+    
                 var updatedUser = await userRepository.Update(userToUpdate);
                 return updatedUser;
             }
@@ -63,7 +66,12 @@ public class UserService : IUserService
     {
         try
         {
-            userRepository.Delete(id);
+            var userToDelete = await userRepository.GetById(id);
+
+            if (userToDelete != null)
+            {
+                userRepository.Delete(userToDelete);
+            }
         }
         catch (Exception e)
         {

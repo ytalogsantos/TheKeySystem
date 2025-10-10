@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using TheKeySystem.Models;
 using TheKeySystem.Services;
+using TheKeySystem.Services.Interfaces;
 
 [Route("users")]
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly UserService service;
+    private readonly IUserService service;
 
-    public UserController(UserService service)
+    public UserController(IUserService service)
     {
         this.service = service;
     }
@@ -17,7 +18,7 @@ public class UserController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<User>> CreateUser(User user)
+    public async Task<ActionResult<User>> CreateUser([FromBody] User user)
     {
         try
         {
@@ -49,7 +50,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("{int:id}")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUser(long id)
     {
         try
@@ -57,9 +58,9 @@ public class UserController : ControllerBase
             var userFound = await service.GetUser(id);
             if (userFound != null)
             {
-                return userFound;
+                return Ok(userFound);
             }
-            return NotFound();
+            return NotFound("User not found.");
         }
         catch (Exception e)
         {
@@ -67,17 +68,12 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPut("{int:id}")]
-    public async Task<ActionResult> UpdateUser(long id, User user)
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateUser(long id, [FromBody] User user)
     {
         try
         {
-            if (id != user.Id)
-            {
-                return BadRequest("User Id mismatch.");
-            }
-
-            var updatedUser = await service.UpdateUser(id);
+            var updatedUser = await service.UpdateUser(id, user);
             if (updatedUser != null)
             {
                 return Ok("User updated.");
@@ -90,7 +86,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpDelete("{int:id}")]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteUser(long id)
     {
         try

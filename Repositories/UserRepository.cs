@@ -49,11 +49,7 @@ public class UserRepository : IUserRepository
         try
         {
             var user = await context.Users.FirstOrDefaultAsync(e => e.Id == id);
-            if (user != null)
-            {
-                return user;
-            }
-            return null;
+            return user;
         }
         catch (Exception e)
         {
@@ -65,17 +61,10 @@ public class UserRepository : IUserRepository
     {
         try
         {
-            var updatedUser = await context.Users.FirstOrDefaultAsync(e => e.Id == user.Id);
-            if (user == null || updatedUser == null)
-            {
-                return null;
-            }
-
-            updatedUser.Username = user.Username;
-            updatedUser.Password = user.Password;
+            var updatedUser = context.Users.Update(user);
             await context.SaveChangesAsync();
 
-            return updatedUser;
+            return updatedUser.Entity;
         }
         catch (Exception e)
         {
@@ -83,16 +72,12 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async void Delete(long id)
+    public async void Delete(User user)
     {
         try
         {
-            var userToDelete = await context.Users.FirstOrDefaultAsync(e => e.Id == id);
-
-            if (userToDelete != null)
-            {
-                context.Users.Remove(userToDelete);
-            }
+            context.Users.Remove(user);
+            await context.SaveChangesAsync();
         }
         catch (Exception e)
         {
